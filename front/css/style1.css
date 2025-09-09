@@ -1,0 +1,237 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+:root{
+    --c1:rgba(91, 14, 179, 0.815);
+    --c2:rgb(194, 161, 255);
+    --c3:black;
+    --c4:white;
+    --c5:rgba(186, 161, 228, 0.712);
+}
+body{
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    align-items: center;
+    overflow-x: hidden;
+}
+header{
+    width: 100%;
+    height: 8vh;
+    background-color: var(--c1);
+    color: var(--c4);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    font-size: 10px;
+
+    & h1{
+    position: relative;
+    left: -13%;
+    }
+}
+/* Hamburger */
+#hamburger {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 30px;
+  height: 22px;
+  padding: 0;
+  position: relative;
+  top: 0;left: 8%;
+}
+
+#hamburger span {
+  display: block;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+
+/* Menu */
+#menu {
+    
+  position: absolute;
+  z-index: 1;
+  margin-top: 1rem;
+  width: 15%;
+  height: 100%;
+  background: var(--c2);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  max-width: 300px;
+  padding: 1rem;
+  position: fixed;
+  top: 6%;left: 86%;
+}
+
+#menu ul {
+  list-style: none;
+}
+
+#menu li + li {
+  margin-top: 0.75rem;
+}
+
+#menu a {
+  text-decoration: none;
+  color: var(--c1);
+  font-weight: 600;
+  display: block;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#menu a:hover {
+  background-color: #bfdbfe;
+}
+
+/* Classe para esconder o menu */
+.hidden {
+  display: none;
+}
+
+.cards{
+    overflow: hidden;/* esconde a barra de rolagem */
+    width: 100%;
+    height: 510px;
+    transition: max-height 0.3s ease, padding 0.3s ease;/* animação suave */
+    padding: 0 1.5rem;/* espaço interno */
+    display: flex;
+    position: relative;
+    top: 100px;
+    left: 10%;
+}
+.cards.open{
+    max-height: 600px;/* Ajuste conforme necessário */
+    padding-top: 1.5rem;/* Espaçamento superior */
+    padding-bottom: 1.5rem;/* Espaçamento inferior */
+}
+.form-container{
+    position: relative;
+    top: 0;left: 20%;
+    background: var(--c2);
+    border-radius: 0.5rem;/* bordas arredondadas */
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);/* sombra */
+    padding: 1.5rem;/* espaçamento interno */
+    width: 800px;
+    margin-right: 1.5rem;/* espaçamento entre os formulários */
+
+    & button{
+    position: relative;
+    left: 40%;
+    margin-top: 1rem;/* espaçamento superior */
+    background-color: var(--c1);
+    display:inline-block;
+    justify-content: center;
+    text-align: center;
+    padding: 0.75rem 1.5rem;/* espaçamento interno */
+    border: none;/* sem borda */
+    border-radius: 100%;
+    height: 100px;/* altura do botão */
+    cursor: pointer;/* cursor de ponteiro */
+    text-align: center;
+    transition: background-color 0.3s ease;/* transição suave */
+}
+
+}
+.form-title{
+    font-size: 1.5rem;/* tamanho da fonte */
+    margin-bottom: 1rem;/* espaçamento inferior */
+    color: var(--c3);/* cor do texto */
+    font-weight: 600;/* peso da fonte */
+}
+.form-group{
+    margin-bottom: 1rem;/* espaçamento inferior */
+}
+.form-group label{
+    display: block;/* exibe como bloco */
+    margin-bottom: 0.5rem;/* espaçamento inferior */
+    color: var(--c3);/* cor do texto */
+    font-weight: 500;/* peso da fonte */
+}
+.form-group input, .form-group select{
+    width: 100%;/* largura total */
+    padding: 0.5rem;/* espaçamento interno */
+    border: 1px solid #ccc;/* borda */
+    border-radius: 0.25rem;/* bordas arredondadas */
+    font-size: 1rem;/* tamanho da fonte */
+}
+
+
+/* Lista de veículos */
+.vehicle-list{
+    width: 95%;
+    position: relative;
+    left: 2.5%;
+    background: rgb(255, 255, 255);
+    margin-top: 2rem;/* espaçamento superior */
+    display: grid;/* exibe como grid */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));/* colunas responsivas */
+    gap: 2.5rem;/* espaçamento entre os itens */
+}
+.vehicle-card{
+
+    background: var(--c2);
+    padding: 1rem;/* espaçamento interno */
+    border-radius: 0.5rem;/* bordas arredondadas */
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);/* sombra */
+    display: flex;
+    flex-direction: column;/* direção da coluna */
+}
+.vehicle-card:hover{
+    transform: translateY(-5px);/* efeito de elevação */
+    transition: transform 0.3s ease;/* transição suave */
+}
+.vehicle-card img{
+    width: 100%;/* largura total */
+    height: auto;/* altura automática */
+    border-radius: 0.5rem;/* bordas arredondadas */
+    margin-bottom: 1rem;/* espaçamento inferior */
+}
+.vehicle-card p {
+    margin: 0.25rem 0;/* espaçamento vertical */
+    color: var(--c3);/* cor do texto */
+    font-weight: 500;/* peso da fonte */
+}
+.vehicle-card .btn{
+    margin-top: auto;/* empurra o botão para o final */
+    background-color: var(--c1);
+    color: var(--c4);/* cor do texto */
+    border: none;/* sem borda */
+    padding: 0.5rem;/* espaçamento interno */
+    border-radius: 0.25rem;/* bordas arredondadas */
+    cursor: pointer;/* cursor de ponteiro */
+    text-align: center;
+    transition: background
+}
+.vehicle-card .btn:hover{
+    background-color: var(--c5);/* cor de fundo ao passar o mouse */
+}
+.vehicle-card .edit-btn{
+    background-color: var(--c2);
+    color: var(--c4);/* cor do texto */
+}
+.vehicle-card .delete-btn{
+    background-color: var(--c1);
+    color: var(--c4);/* cor do texto */
+    margin-top: 0.5rem;/* espaçamento superior */
+}
+.vehicle-card .delete-btn:hover{
+    background-color: rgb(0, 14, 139);/* cor de fundo ao passar o mouse */
+}
+/* Responsividade */
+@media (max-width: 640px) {
+  .side-menu {
+    width: 80%;
+  }
+}
