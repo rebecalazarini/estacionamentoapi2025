@@ -103,7 +103,7 @@ header{
 .cards{
     overflow: hidden;/* esconde a barra de rolagem */
     width: 100%;
-    height: 510px;
+    height: 895px;
     transition: max-height 0.3s ease, padding 0.3s ease;/* animação suave */
     padding: 0 1.5rem;/* espaço interno */
     display: flex;
@@ -125,6 +125,7 @@ header{
     padding: 1.5rem;/* espaçamento interno */
     width: 800px;
     margin-right: 1.5rem;/* espaçamento entre os formulários */
+    
 
     & button{
     position: relative;

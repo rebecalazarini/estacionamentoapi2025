@@ -1,167 +1,155 @@
+const API_URL = 'https://estacionamentorebecacrislene.vercel.app/veiculos';
+
 const hamburger = document.getElementById('hamburger');
 const menu = document.getElementById('menu');
-
 hamburger.addEventListener('click', () => {
   menu.classList.toggle('hidden');
 });
-// Lista inicial de veículos
-var vehicles = [
-  { id: 1, marca: 'Fiat', modelo: 'Uno', ano: 2020, cor: 'Vermelho' },
-  { id: 2, marca: 'Volkswagen', modelo: 'Gol', ano: 2019, cor: 'Azul' }
-];
 
-// Próximo id para novos veículos
-var nextId = 3;
+const vehicleForm = document.getElementById('vehicle-form');
+const vehicleList = document.getElementById('vehicle-list');
 
-// Variáveis para controle de edição
-var editMode = false;
-var editingId = null;
+// Editar controle
+let editMode = false;
+let editingPlaca = null;
 
-// Pega elementos do DOM
-var menuToggle = document.getElementById('menu-toggle');
-var menuOverlay = document.getElementById('menu-overlay');
-var addFormSection = document.getElementById('add-form');
-var vehicleForm = document.getElementById('vehicle-form');
-var vehicleList = document.getElementById('vehicle-list');
+// Carrega os veículos ao iniciar
+window.onload = () => {
+  fetchVehicles();
+};
 
-
-// Mostra o formulário para adicionar veículo
-function showAddForm() {
-  addFormSection.classList.add('open');
-  menuOverlay.classList.remove('open');
-  menuToggle.classList.remove('open');
-  editMode = false;
-  editingId = null;
-  vehicleForm.reset();
-}
-
-// Ativa o modo edição
-function enableEditMode() {
-  editMode = true;
-  alert('Modo de edição ativado. Clique em "Editar" em um veículo.');
-  menuOverlay.classList.remove('open');
-  menuToggle.classList.remove('open');
-}
-
-// Limpa a lista de veículos
-function clearAll() {
-  vehicles = [];
-  renderVehicles();
-  menuOverlay.classList.remove('open');
-  menuToggle.classList.remove('open');
-}
-
-// Quando o formulário for enviado
-vehicleForm.addEventListener('submit', function(event) {
-  event.preventDefault();
-
-  var marca = vehicleForm.marca.value.trim();
-  var modelo = vehicleForm.modelo.value.trim();
-  var ano = parseInt(vehicleForm.ano.value);
-  var cor = vehicleForm.cor.value.trim();
-
-  if (editMode && editingId !== null) {
-    // Atualiza veículo existente
-    for (var i = 0; i < vehicles.length; i++) {
-      if (vehicles[i].id === editingId) {
-        vehicles[i].marca = marca;
-        vehicles[i].modelo = modelo;
-        vehicles[i].ano = ano;
-        vehicles[i].cor = cor;
-        break;
+// Buscar todos os veículos (GET)
+async function fetchVehicles() {
+  try {
+    const response = await fetch(API_URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'insomnia/11.5.0'
       }
-    }
-  } else {
-    // Adiciona novo veículo
-    vehicles.push({
-      id: nextId,
-      marca: marca,
-      modelo: modelo,
-      ano: ano,
-      cor: cor
     });
-    nextId++;
+    const data = await response.json();
+    renderVehicles(data);
+  } catch (error) {
+    console.error('Erro ao buscar veículos:', error);
   }
+}
 
-  renderVehicles();
-  vehicleForm.reset();
-  addFormSection.classList.remove('open');
-  editMode = false;
-  editingId = null;
-});
-
-// Função para renderizar a lista de veículos
-function renderVehicles() {
+// Renderizar os veículos no HTML
+function renderVehicles(vehicles) {
   vehicleList.innerHTML = '';
 
   if (vehicles.length === 0) {
-    vehicleList.innerHTML = '<p class="text-center text-gray-500">Nenhum veículo cadastrado.</p>';
+    vehicleList.innerHTML = '<p>Nenhum veículo cadastrado.</p>';
     return;
   }
 
-  for (var i = 0; i < vehicles.length; i++) {
-    var vehicle = vehicles[i];
+  vehicles.forEach(vehicle => {
+    const card = document.createElement('div');
+    card.classList.add('vehicle-card');
 
-    var card = document.createElement('div');
-    card.className = 'vehicle-card';
+    card.innerHTML = `
+      <h3>${vehicle.marca} ${vehicle.modelo}</h3>
+      <p><strong>Proprietário:</strong> ${vehicle.proprietario}</p>
+      <p><strong>Placa:</strong> ${vehicle.placa}</p>
+      <p><strong>Tipo:</strong> ${vehicle.tipo}</p>
+      <p><strong>Cor:</strong> ${vehicle.cor}</p>
+      <p><strong>Ano:</strong> ${vehicle.ano}</p>
+      <p><strong>Telefone:</strong> ${vehicle.telefone}</p>
+      <button class="edit-btn">Editar</button>
+      <button class="delete-btn">Excluir</button>
+    `;
 
-    var img = document.createElement('img');
-    img.src = 'https://placehold.co/300x200/' + vehicle.cor.toLowerCase() + '/white?text=Veículo';
-    img.alt = 'Imagem ilustrativa de um veículo ' + vehicle.cor;
-    img.className = 'vehicle-image';
+    // Botão Editar
+    card.querySelector('.edit-btn').addEventListener('click', () => {
+      editMode = true;
+      editingPlaca = vehicle.placa;
+      fillForm(vehicle);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-    var title = document.createElement('h4');
-    title.className = 'vehicle-title';
-    title.textContent = vehicle.marca + ' ' + vehicle.modelo;
-
-    var info = document.createElement('p');
-    info.className = 'vehicle-info';
-    info.textContent = 'Ano: ' + vehicle.ano + ' | Cor: ' + vehicle.cor;
-
-    var btnContainer = document.createElement('div');
-    btnContainer.className = 'button-container';
-
-    var editBtn = document.createElement('button');
-    editBtn.textContent = 'Editar';
-    editBtn.className = 'edit-btn btn';
-
-    editBtn.addEventListener('click', (function(v) {
-      return function() {
-        vehicleForm.marca.value = v.marca;
-        vehicleForm.modelo.value = v.modelo;
-        vehicleForm.ano.value = v.ano;
-        vehicleForm.cor.value = v.cor;
-        editingId = v.id;
-        editMode = true;
-        addFormSection.classList.add('open');
-        window.scrollTo(0, 0);
-      };
-    })(vehicle));
-
-    var deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Excluir';
-    deleteBtn.className = 'delete-btn btn';
-
-    deleteBtn.addEventListener('click', (function(id) {
-      return function() {
-        vehicles = vehicles.filter(function(v) {
-          return v.id !== id;
-        });
-        renderVehicles();
-      };
-    })(vehicle.id));
-
-    btnContainer.appendChild(editBtn);
-    btnContainer.appendChild(deleteBtn);
-
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(info);
-    card.appendChild(btnContainer);
+    // Botão Excluir
+    card.querySelector('.delete-btn').addEventListener('click', () => {
+      if (confirm(`Deseja realmente excluir o veículo da placa ${vehicle.placa}?`)) {
+        deleteVehicle(vehicle.placa);
+      }
+    });
 
     vehicleList.appendChild(card);
-  }
+  });
 }
 
-// Renderiza a lista inicial ao carregar a página
-renderVehicles();
+// Preencher o formulário com os dados para edição
+function fillForm(vehicle) {
+  vehicleForm['owner-name'].value = vehicle.proprietario;
+  vehicleForm['vehicle-type'].value = vehicle.tipo;
+  vehicleForm['license-plate'].value = vehicle.placa;
+  vehicleForm['vehicle-model'].value = vehicle.modelo;
+  vehicleForm['phone'].value = vehicle.telefone;
+  vehicleForm['ano'].value = vehicle.ano;
+  vehicleForm['color'].value = vehicle.cor;
+}
+
+// Submissão do formulário (POST ou PUT)
+vehicleForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+const novoVeiculo = {
+  proprietario: vehicleForm['owner-name'].value.trim(),
+  tipo: vehicleForm['vehicle-type'].value.trim().toUpperCase(), // <-- CORRIGIDO
+  placa: vehicleForm['license-plate'].value.trim(),
+  modelo: vehicleForm['vehicle-model'].value.trim(),
+  telefone: vehicleForm['phone'].value.trim(),
+  ano: parseInt(vehicleForm['ano'].value),
+  cor: vehicleForm['color'].value.trim(),
+  marca: vehicleForm['vehicle-brand'].value.trim()
+};
+
+
+  try {
+    const method = editMode ? 'PATCH' : 'POST';
+    const url = editMode ? `${API_URL}/${editingPlaca}` : API_URL;
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'insomnia/11.5.0'
+      },
+      body: JSON.stringify(novoVeiculo)
+    });
+
+    if (!response.ok) {
+      const msg = await response.text();
+      throw new Error(`Erro na API: ${msg}`);
+    }
+
+    vehicleForm.reset();
+    editMode = false;
+    editingPlaca = null;
+    fetchVehicles();
+  } catch (error) {
+    console.error('Erro ao salvar veículo:', error);
+  }
+});
+
+// Deletar veículo (DELETE)
+async function deleteVehicle(placa) {
+  try {
+    const response = await fetch(`${API_URL}/${placa}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'insomnia/11.5.0'
+      }
+    });
+
+    if (!response.ok) {
+      const msg = await response.text();
+      throw new Error(`Erro ao deletar: ${msg}`);
+    }
+
+    fetchVehicles();
+  } catch (error) {
+    console.error(error);
+  }
+}

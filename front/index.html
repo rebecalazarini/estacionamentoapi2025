@@ -5,63 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../front/css/style1.css"/>
     <link rel="icon" type="image/x-icon" href="1367171.png">
-    <title>Estacionamento:o melhor da região</title>
-    
+    <title>Estacionamento: o melhor da região</title>
 </head>
 <body>
-    <!--Cabeçalho-->
+    <!-- Cabeçalho -->
     <header>
         <h1>Estacionamento Rebeca & Crislene</h1>
         <button id="hamburger" aria-label="Abrir menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    </div>
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </header>
-    <!--3 tracinhos-->
+    
+    <!-- Menu -->
     <nav id="menu" class="hidden" aria-label="Menu principal">
-    <ul>
-      <li><a href="#">Novos Veículos</a></li>
-      <li><a href="#">Editar Veículos</a></li>
-      <li><a href="#">Relatórios de Estadias</a></li>
-    </ul>
-  </nav>
+        <ul>
+            <li><a href="#">Novos Veículos</a></li>
+            <li><a href="#">Editar Veículos</a></li>
+            <li><a href="#">Relatórios de Estadias</a></li>
+        </ul>
+    </nav>
 
-
-
-
-  <!--Cards dos carros-->
-  <section class="cards">
-    <div class="form-container">
-        <h3 class="'form-title'">Cadastrar Novo Veículo</h3>
-        <form id="vehicle-form">
-            <div class="form-group">
-                <label for="owner-name">Nome do Proprietário:</label>
-                <input type="text" id="owner-name" name="owner-name" required>
-    </div>
-    <div class="form-group">
-        <label for="vehicle-model">Modelo do Veículo:</label>
-        <input type="text" id="vehicle-model" name="vehicle-model" required>
-    </div>
-    <div class="form-group">
-        <label for="ano">Ano</label>
-        <input type="number" id="ano" name="ano" required>
+    <!-- Cards dos carros -->
+    <section class="cards">
+        <div class="form-container">
+            <h3 class="'form-title'">Cadastrar Novo Veículo</h3>
+            <form id="vehicle-form">
+                <div class="form-group">
+                    <label for="owner-name">Nome do Proprietário:</label>
+                    <input type="text" id="owner-name" name="owner-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-type">Tipo:</label>
+                    <input type="text" id="vehicle-type" name="vehicle-type" required>
+                </div>
+                <div class="form-group">
+                    <label for="license-plate">Placa do Veículo:</label>
+                    <input type="text" id="license-plate" name="license-plate" required>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Marca do Veículo:</label>
+                    <input type="text" id="brand" name="brand" required>
+                <div class="form-group">
+                    <label for="vehicle-model">Modelo do Veículo:</label>
+                    <input type="text" id="vehicle-model" name="vehicle-model" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefone:</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="ano">Ano:</label>
+                    <input type="number" id="ano" name="ano" required>
+                </div>
+                <div class="form-group">
+                    <label for="color">Cor do Veículo:</label>
+                    <input type="text" id="color" name="color" required>
+                </div>
+                <button type="submit">Cadastrar</button>
+            </form>
         </div>
-    <div class="form-group">
-        <label for="license-plate">Cor do Veículo:</label>
-        <input type="text" id="color" name="color" required>
-    </div>
-    <button type="submit">Cadastrar</button>
-<br><br></form>
-</div>
-</section><br><br><br><br><br><br>
-<!--Lista dos Veículos--><br><br><br><br><br><br>
-<main class="p-6">
-    <div class="vehicle-list" id="vehicle-list">
-      <!-- Cards serão inseridos aqui via JS -->
-    </div>
-  </main><br><br><br><br><br><br><br>
-    <script src="./js/js.js"></script>
+    </section><br><br><br><br><br><br>
+
+    <!-- Lista de Veículos -->
+    <main class="p-6">
+        <div class="vehicle-list" id="vehicle-list">
+            <!-- Cards dos veículos vão aqui via JS -->
+        </div>
+    </main>
+
+    <!-- Referência ao script externo -->
+    <script src="js/js.js"></script>
 </body>
 </html>
