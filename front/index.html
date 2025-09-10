@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../front/css/style1.css"/>
+    <link rel="stylesheet" href="../front/css/style1.css" />
     <link rel="icon" type="image/x-icon" href="1367171.png">
     <title>Estacionamento: o melhor da região</title>
 </head>
@@ -17,20 +17,20 @@
             <span></span>
         </button>
     </header>
-    
+
     <!-- Menu -->
     <nav id="menu" class="hidden" aria-label="Menu principal">
         <ul>
-            <li><a href="#">Novos Veículos</a></li>
-            <li><a href="#">Editar Veículos</a></li>
-            <li><a href="#">Relatórios de Estadias</a></li>
+            <li><a href="#" id="menu-novos">Novos Veículos</a></li>
+            <li><a href="#" id="menu-editar">Editar Veículos</a></li>
+            <li><a href="#" id="menu-relatorios">Relatórios de Estadias</a></li>
         </ul>
     </nav>
 
-    <!-- Cards dos carros -->
-    <section class="cards">
+    <!-- Seção: Formulário de cadastro -->
+    <section id="form-section" class="cards">
         <div class="form-container">
-            <h3 class="'form-title'">Cadastrar Novo Veículo</h3>
+            <h3 class="form-title">Cadastrar Novo Veículo</h3>
             <form id="vehicle-form">
                 <div class="form-group">
                     <label for="owner-name">Nome do Proprietário:</label>
@@ -45,8 +45,9 @@
                     <input type="text" id="license-plate" name="license-plate" required>
                 </div>
                 <div class="form-group">
-                    <label for="brand">Marca do Veículo:</label>
-                    <input type="text" id="brand" name="brand" required>
+                    <label for="vehicle-brand">Marca do Veículo:</label>
+                    <input type="text" id="vehicle-brand" name="vehicle-brand" required>
+                </div>
                 <div class="form-group">
                     <label for="vehicle-model">Modelo do Veículo:</label>
                     <input type="text" id="vehicle-model" name="vehicle-model" required>
@@ -60,22 +61,27 @@
                     <input type="number" id="ano" name="ano" required>
                 </div>
                 <div class="form-group">
-                    <label for="color">CofDr do Veículo:</label>
+                    <label for="color">Cor do Veículo:</label>
                     <input type="text" id="color" name="color" required>
                 </div>
                 <button type="submit">Cadastrar</button>
             </form>
         </div>
-    </section><br><br><br><br><br><br>
+    </section>
 
-    <!-- Lista de Veículos -->
-    <main class="p-6">
+    <!-- Seção: Lista de veículos -->
+    <main id="list-section" class="p-6">
         <div class="vehicle-list" id="vehicle-list">
             <!-- Cards dos veículos vão aqui via JS -->
         </div>
     </main>
+    <!-- Mensagem de orientação -->
+<div id="edit-alert" class="alert hidden">
+  🔒 Clique no botão “Editar” do veículo que deseja modificar.
+  <button id="close-alert">Fechar</button>
+</div>
 
-    <!-- Referência ao script externo -->
+
     <script src="js/js.js"></script>
 </body>
 </html>

@@ -236,3 +236,29 @@ header{
     width: 80%;
   }
 }
+.alert {
+  background-color: #ffeeba;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 10px 15px;
+  margin: 15px auto;
+  width: 80%;
+  border-radius: 5px;
+  font-size: 1rem;
+  position: relative;
+  text-align: center;
+}
+
+.alert button {
+  margin-left: 20px;
+  padding: 5px 10px;
+  background: #856404;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}

@@ -2,19 +2,76 @@ const API_URL = 'https://estacionamentorebecacrislene.vercel.app/veiculos';
 
 const hamburger = document.getElementById('hamburger');
 const menu = document.getElementById('menu');
-hamburger.addEventListener('click', () => {
-  menu.classList.toggle('hidden');
-});
+
+const menuNovos = document.getElementById('menu-novos');
+const menuEditar = document.getElementById('menu-editar');
+const menuRelatorios = document.getElementById('menu-relatorios');
+
+const editAlert = document.getElementById('edit-alert');
+const closeAlert = document.getElementById('close-alert');
 
 const vehicleForm = document.getElementById('vehicle-form');
 const vehicleList = document.getElementById('vehicle-list');
+
+// Controle de exibição de seções (caso queira implementar navegação)
+const formSection = document.querySelector('.form-container');
+const listSection = document.querySelector('.vehicle-list');
 
 // Editar controle
 let editMode = false;
 let editingPlaca = null;
 
+// Mostrar/esconder menu hamburger
+hamburger.addEventListener('click', () => {
+  menu.classList.toggle('hidden');
+});
+
+// Botão Fechar alerta de edição
+closeAlert.addEventListener('click', () => {
+  editAlert.classList.add('hidden');
+});
+
+// Menu - Novos Veículos (exemplo: mostra form)
+menuNovos.addEventListener('click', (e) => {
+  e.preventDefault();
+  hideAllSections();
+  formSection.style.display = 'block';
+  editAlert.classList.add('hidden');
+  menu.classList.add('hidden');
+});
+
+// Menu - Editar Veículos (mostrar alerta)
+menuEditar.addEventListener('click', (e) => {
+  e.preventDefault();
+  hideAllSections();
+  listSection.style.display = 'block';
+  editAlert.classList.remove('hidden');
+  menu.classList.add('hidden');
+
+  // Se quiser, pode esconder automaticamente depois de 5 segundos:
+  // setTimeout(() => editAlert.classList.add('hidden'), 5000);
+});
+
+// Menu - Relatórios de Estadias (aqui só esconde tudo para exemplo)
+menuRelatorios.addEventListener('click', (e) => {
+  e.preventDefault();
+  hideAllSections();
+  editAlert.classList.add('hidden');
+  menu.classList.add('hidden');
+  // Coloque aqui o código para mostrar relatório se tiver
+});
+
+// Função para esconder tudo antes de mostrar algo
+function hideAllSections() {
+  formSection.style.display = 'none';
+  listSection.style.display = 'none';
+  editAlert.classList.add('hidden');
+}
+
 // Carrega os veículos ao iniciar
 window.onload = () => {
+  hideAllSections();
+  formSection.style.display = 'block';
   fetchVehicles();
 };
 
@@ -53,6 +110,7 @@ function renderVehicles(vehicles) {
       <p><strong>Proprietário:</strong> ${vehicle.proprietario}</p>
       <p><strong>Placa:</strong> ${vehicle.placa}</p>
       <p><strong>Tipo:</strong> ${vehicle.tipo}</p>
+      <p><strong>Marca:</strong> ${vehicle.marca}</p>
       <p><strong>Cor:</strong> ${vehicle.cor}</p>
       <p><strong>Ano:</strong> ${vehicle.ano}</p>
       <p><strong>Telefone:</strong> ${vehicle.telefone}</p>
@@ -66,6 +124,9 @@ function renderVehicles(vehicles) {
       editingPlaca = vehicle.placa;
       fillForm(vehicle);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      editAlert.classList.add('hidden'); // Oculta alerta se estiver aberto
+      hideAllSections();
+      formSection.style.display = 'block';
     });
 
     // Botão Excluir
@@ -88,22 +149,23 @@ function fillForm(vehicle) {
   vehicleForm['phone'].value = vehicle.telefone;
   vehicleForm['ano'].value = vehicle.ano;
   vehicleForm['color'].value = vehicle.cor;
+  vehicleForm['vehicle-brand'].value = vehicle.marca;
 }
 
-// Submissão do formulário (POST ou PUT)
+// Submissão do formulário (POST ou PATCH)
 vehicleForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-const novoVeiculo = {
-  proprietario: vehicleForm['owner-name'].value.trim(),
-  tipo: vehicleForm['vehicle-type'].value.trim().toUpperCase(), // <-- CORRIGIDO
-  placa: vehicleForm['license-plate'].value.trim(),
-  modelo: vehicleForm['vehicle-model'].value.trim(),
-  telefone: vehicleForm['phone'].value.trim(),
-  ano: parseInt(vehicleForm['ano'].value),
-  cor: vehicleForm['color'].value.trim(),
-  marca: vehicleForm['vehicle-brand'].value.trim()
-};
 
+  const novoVeiculo = {
+    proprietario: vehicleForm['owner-name'].value.trim(),
+    tipo: vehicleForm['vehicle-type'].value.trim().toUpperCase(),
+    placa: vehicleForm['license-plate'].value.trim(),
+    modelo: vehicleForm['vehicle-model'].value.trim(),
+    telefone: vehicleForm['phone'].value.trim(),
+    ano: parseInt(vehicleForm['ano'].value),
+    cor: vehicleForm['color'].value.trim(),
+    marca: vehicleForm['vehicle-brand'].value.trim()
+  };
 
   try {
     const method = editMode ? 'PATCH' : 'POST';
@@ -122,11 +184,15 @@ const novoVeiculo = {
       const msg = await response.text();
       throw new Error(`Erro na API: ${msg}`);
     }
+vehicleForm.reset();
+editMode = false;
+editingPlaca = null;
 
-    vehicleForm.reset();
-    editMode = false;
-    editingPlaca = null;
-    fetchVehicles();
+// Mostrar os cards após cadastro
+hideAllSections();
+listSection.style.display = 'block';
+fetchVehicles();
+
   } catch (error) {
     console.error('Erro ao salvar veículo:', error);
   }
