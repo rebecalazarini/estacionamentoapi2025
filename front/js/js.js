@@ -1,4 +1,5 @@
 const API_URL = 'https://estacionamentorebecacrislene.vercel.app/veiculos';
+const ESTADIAS_URL = 'https://estacionamentorebecacrislene.vercel.app/estadias';
 
 const hamburger = document.getElementById('hamburger');
 const menu = document.getElementById('menu');
@@ -13,11 +14,11 @@ const closeAlert = document.getElementById('close-alert');
 const vehicleForm = document.getElementById('vehicle-form');
 const vehicleList = document.getElementById('vehicle-list');
 
-// Controle de exibição de seções (caso queira implementar navegação)
+// Controle de exibição de seções
 const formSection = document.querySelector('.form-container');
 const listSection = document.querySelector('.vehicle-list');
+const relatorioSection = document.querySelector('.relatorio-estadias'); // ⬅ nova seção
 
-// Editar controle
 let editMode = false;
 let editingPlaca = null;
 
@@ -31,7 +32,7 @@ closeAlert.addEventListener('click', () => {
   editAlert.classList.add('hidden');
 });
 
-// Menu - Novos Veículos (exemplo: mostra form)
+// Menu - Novos Veículos
 menuNovos.addEventListener('click', (e) => {
   e.preventDefault();
   hideAllSections();
@@ -40,31 +41,30 @@ menuNovos.addEventListener('click', (e) => {
   menu.classList.add('hidden');
 });
 
-// Menu - Editar Veículos (mostrar alerta)
+// Menu - Editar Veículos
 menuEditar.addEventListener('click', (e) => {
   e.preventDefault();
   hideAllSections();
   listSection.style.display = 'block';
   editAlert.classList.remove('hidden');
   menu.classList.add('hidden');
-
-  // Se quiser, pode esconder automaticamente depois de 5 segundos:
-  // setTimeout(() => editAlert.classList.add('hidden'), 5000);
 });
 
-// Menu - Relatórios de Estadias (aqui só esconde tudo para exemplo)
+// Menu - Relatórios de Estadias
 menuRelatorios.addEventListener('click', (e) => {
   e.preventDefault();
   hideAllSections();
+  relatorioSection.style.display = 'block';
   editAlert.classList.add('hidden');
   menu.classList.add('hidden');
-  // Coloque aqui o código para mostrar relatório se tiver
+  fetchRelatorioEstadias(); // ⬅ chamada para relatório
 });
 
-// Função para esconder tudo antes de mostrar algo
+// Esconder todas as seções
 function hideAllSections() {
   formSection.style.display = 'none';
   listSection.style.display = 'none';
+  relatorioSection.style.display = 'none';
   editAlert.classList.add('hidden');
 }
 
@@ -75,7 +75,7 @@ window.onload = () => {
   fetchVehicles();
 };
 
-// Buscar todos os veículos (GET)
+// Buscar veículos (GET)
 async function fetchVehicles() {
   try {
     const response = await fetch(API_URL, {
@@ -92,7 +92,7 @@ async function fetchVehicles() {
   }
 }
 
-// Renderizar os veículos no HTML
+// Renderizar os veículos
 function renderVehicles(vehicles) {
   vehicleList.innerHTML = '';
 
@@ -118,18 +118,16 @@ function renderVehicles(vehicles) {
       <button class="delete-btn">Excluir</button>
     `;
 
-    // Botão Editar
     card.querySelector('.edit-btn').addEventListener('click', () => {
       editMode = true;
       editingPlaca = vehicle.placa;
       fillForm(vehicle);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      editAlert.classList.add('hidden'); // Oculta alerta se estiver aberto
+      editAlert.classList.add('hidden');
       hideAllSections();
       formSection.style.display = 'block';
     });
 
-    // Botão Excluir
     card.querySelector('.delete-btn').addEventListener('click', () => {
       if (confirm(`Deseja realmente excluir o veículo da placa ${vehicle.placa}?`)) {
         deleteVehicle(vehicle.placa);
@@ -140,7 +138,7 @@ function renderVehicles(vehicles) {
   });
 }
 
-// Preencher o formulário com os dados para edição
+// Preencher formulário com dados do veículo
 function fillForm(vehicle) {
   vehicleForm['owner-name'].value = vehicle.proprietario;
   vehicleForm['vehicle-type'].value = vehicle.tipo;
@@ -152,7 +150,7 @@ function fillForm(vehicle) {
   vehicleForm['vehicle-brand'].value = vehicle.marca;
 }
 
-// Submissão do formulário (POST ou PATCH)
+// Submissão do formulário
 vehicleForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -184,21 +182,21 @@ vehicleForm.addEventListener('submit', async (e) => {
       const msg = await response.text();
       throw new Error(`Erro na API: ${msg}`);
     }
-vehicleForm.reset();
-editMode = false;
-editingPlaca = null;
 
-// Mostrar os cards após cadastro
-hideAllSections();
-listSection.style.display = 'block';
-fetchVehicles();
+    vehicleForm.reset();
+    editMode = false;
+    editingPlaca = null;
+
+    hideAllSections();
+    listSection.style.display = 'block';
+    fetchVehicles();
 
   } catch (error) {
     console.error('Erro ao salvar veículo:', error);
   }
 });
 
-// Deletar veículo (DELETE)
+// Excluir veículo
 async function deleteVehicle(placa) {
   try {
     const response = await fetch(`${API_URL}/${placa}`, {
@@ -219,3 +217,86 @@ async function deleteVehicle(placa) {
     console.error(error);
   }
 }
+
+function fetchRelatorioEstadias() {
+  fetch(ESTADIAS_URL, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.5.0'
+    }
+  })
+    .then(res => res.json())
+    .then(estadias => {
+      const container = document.getElementById('relatorio-container');
+      container.innerHTML = '';
+
+      if (estadias.length === 0) {
+        container.innerHTML = '<p>Nenhuma estadia registrada.</p>';
+        return;
+      }
+
+      estadias.forEach(estadia => {
+        const card = document.createElement('div');
+        card.classList.add('relatorio-card');
+
+        const entrada = new Date(estadia.entrada);
+        const saida = estadia.saida ? new Date(estadia.saida) : null;
+        const agora = new Date();
+        const fim = saida || agora;
+
+        const horas = Math.floor((fim - entrada) / (1000 * 60 * 60));
+
+        card.innerHTML = `
+          <h3>Placa: ${estadia.placa}</h3>
+          <p><strong>Entrada:</strong> ${entrada.toLocaleString()}</p>
+          <p><strong>Saída:</strong> ${saida ? saida.toLocaleString() : 'Ainda no estacionamento'}</p>
+          <p><strong>Tempo de estadia:</strong> ${horas} hora(s)</p>
+        `;
+
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error('Erro ao buscar estadias:', err);
+      const container = document.getElementById('relatorio-container');
+      container.innerHTML = '<p>Erro ao carregar relatório de estadias.</p>';
+    });
+}
+
+const estadiaForm = document.getElementById('estadia-form');
+
+estadiaForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const entradaRaw = document.getElementById('estadia-entrada').value;
+  const saidaRaw = document.getElementById('estadia-saida').value;
+
+  const novaEstadia = {
+    placa: document.getElementById('estadia-placa').value.trim(),
+    entrada: new Date(entradaRaw).toISOString(),
+    saida: saidaRaw ? new Date(saidaRaw).toISOString() : null,
+    valorHora: 10
+  };
+
+  try {
+    const response = await fetch(ESTADIAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'insomnia/11.5.0'
+      },
+      body: JSON.stringify(novaEstadia)
+    });
+
+    if (!response.ok) {
+      const msg = await response.text();
+      throw new Error(`Erro ao registrar estadia: ${msg}`);
+    }
+
+    estadiaForm.reset();
+    fetchRelatorioEstadias();
+  } catch (error) {
+    console.error('Erro ao enviar estadia:', error);
+  }
+});
